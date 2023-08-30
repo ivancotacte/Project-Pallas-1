@@ -1,3 +1,6 @@
+const config = require("../config");
+const { admins, banned } = config;
+
 module.exports = ({ api, event }) => {
   let input = event.body.toLowerCase();
   let data = input.split(" ");
@@ -16,7 +19,7 @@ module.exports = ({ api, event }) => {
               api.sendMessage(
                 `Error: \n${error.message}`,
                 event.threadID,
-                event.messageID,
+                event.messageID
               );
               return;
             }
@@ -24,7 +27,7 @@ module.exports = ({ api, event }) => {
               api.sendMessage(
                 `Stderr:\n ${stderr}\n${stdout}`,
                 event.threadID,
-                event.messageID,
+                event.messageID
               );
               return;
             }
@@ -35,7 +38,7 @@ module.exports = ({ api, event }) => {
         api.sendMessage(
           "Sorry, but you do not have the necessary permission to use this command.",
           event.threadID,
-          event.messageID,
+          event.messageID
         );
       }
     }
