@@ -1,7 +1,6 @@
 const login = require("./fca-ivan");
 const fs = require("fs");
 const path = require("path");
-const color = require("colors");
 
 const proxy = {
   protocol: "https",
