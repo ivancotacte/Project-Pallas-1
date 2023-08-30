@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/ivancotacte/Project-Pallas.git"
   },
-  "author": "Ivan Cotacte",
+  "author": {
+    "name": "Ivan Cotacte",
+    "email": "cotactearmenion@gmail.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ivancotacte/Project-Pallas/issues"
