@@ -1,0 +1,22 @@
+{
+  "name": "project-pallas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivancotacte/Project-Pallas.git"
+  },
+  "author": "Ivan Cotacte",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivancotacte/Project-Pallas/issues"
+  },
+  "homepage": "https://github.com/ivancotacte/Project-Pallas#readme",
+  "devDependencies": {
+    "prettier": "3.0.3"
+  }
+}
