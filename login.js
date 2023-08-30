@@ -1,16 +1,7 @@
-const login = require("");
+const login = require("./fca-ivan");
 const fs = require("fs");
+const path = require("path");
 const color = require("colors");
-
-const getAppstates = async () => {
-  try {
-    const files = await fs.promises.readdir("appstates");
-    return files;
-  } catch (error) {
-    console.error("Error reading folder:", error);
-    throw error;
-  }
-};
 
 const proxy = {
   protocol: "https",
@@ -22,74 +13,68 @@ const proxy = {
   city: "Taguig",
   hostname: "103.69.108.78 (CITI Cableworld Inc.)",
 };
- 
+
 const local = {
-  timezone: 'Asia/Manila',
-  region: 'ph',
+  timezone: "Asia/Manila",
+  region: "ph",
   headers: {
-    'X-Facebook-Locale': 'en_US',
-    'X-Facebook-Timezone': 'Asia/Manila',
-    'X-Fb-Connection-Quality': 'EXCELLENT',
+    "X-Facebook-Locale": "en_US",
+    "X-Facebook-Timezone": "Asia/Manila",
+    "X-Fb-Connection-Quality": "EXCELLENT",
   },
 };
 
 async function Listen(cb) {
-  let appstates = await getAppstates();
-  for (let i = 0; i < appstates.length; i++) {
-    let credentials = JSON.parse(
-      fs.readFileSync(`./appstates/${appstates[i]}`, "utf8")
-    );
-    //Validate appstate
-    if (typeof credentials != "object" && !credentials[0]) {
-      return console.error("Invalid appstate: " + appstates[i]);
-    }
+  try {
+    const appStatePath = path.join(__dirname, "./appstate.json");
+    const credentials = JSON.parse(fs.readFileSync(appStatePath, "utf8"));
+
     login(
       {
         appState: credentials,
+        local: local,
         proxy: proxy,
-        local: local
       },
       async (err, api) => {
+        if (err) {
+          console.error("Login error for appstate:");
+          return;
+        }
 
         try {
-          let cID = api.getCurrentUserID();
-          let userInfo = await api.getUserInfo(cID);
-          userInfo = userInfo[cID];
-          console.log(
-            `${color.blue(`Logged in as >>>`)} ${color.rainbow(
-              `${userInfo.name}`
-            )}`
-          );
-          console.log(
-            `${color.green(`Appstate OK >>>`)} ${color.rainbow(
-              `${appstates[i]}`
-            )}`
-          );
+          const cID = api.getCurrentUserID();
+          const userInfo = (await api.getUserInfo(cID))[cID];
+          console.log(`[ FCA-IVAN ] > Logged in as ${userInfo.name}`);
 
-          if (err) return console.error("Login error");
           api.setOptions({
             logLevel: "silent",
             forceLogin: true,
             listenEvents: true,
             autoMarkDelivery: false,
+            selfListen: true,
+            online: true, 
           });
-          api.listen((err, event) => {
-            if (err) return console.error(err);
+
+          api.listenMqtt(async (err, event) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
             cb(api, event);
           });
         } catch (err) {
           if (!!err.errorSummary) {
             console.log(err.errorSummary);
           } else {
-            // console.log(err)
+            console.log(err);
           }
-          console.log(
-            color.red(`Appstate Error >>>`),
-            color.blue(appstates[i])
-          );
+          console.log("Appstate Error >>>");
         }
       }
     );
+  } catch (error) {
+    console.error("Error processing appstate file:");
+    console.error(error);
   }
 }
 
