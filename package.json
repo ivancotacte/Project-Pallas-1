@@ -21,5 +21,14 @@
   "homepage": "https://github.com/ivancotacte/Project-Pallas#readme",
   "devDependencies": {
     "prettier": "3.0.3"
+  },
+  "dependencies": {
+    "bluebird": "^2.11.0",
+    "cheerio": "^0.22.0",
+    "https-proxy-agent": "^4.0.0",
+    "mqtt": "^3.0.0",
+    "npmlog": "^1.2.0",
+    "request": "^2.53.0",
+    "websocket-stream": "^5.5.0"
   }
 }
