@@ -1,5 +1,6 @@
+// Import required modules
 const login = require("./fca-ivan");
-const fs = require("fs");
+const fs = require("fs").promises; // Use fs.promises for async file operations
 const path = require("path");
 
 const proxy = {
@@ -23,10 +24,11 @@ const local = {
   },
 };
 
+// Define the Listen function
 async function Listen(cb) {
   try {
     const appStatePath = path.join(__dirname, "./appstate.json");
-    const credentials = JSON.parse(fs.readFileSync(appStatePath, "utf8"));
+    const credentials = JSON.parse(await fs.readFile(appStatePath, "utf8"));
 
     login(
       {
@@ -36,7 +38,7 @@ async function Listen(cb) {
       },
       async (err, api) => {
         if (err) {
-          console.error("Login error for appstate:");
+          console.error("Login error for appstate:", err);
           return;
         }
 
@@ -51,7 +53,7 @@ async function Listen(cb) {
             listenEvents: true,
             autoMarkDelivery: false,
             selfListen: true,
-            online: true, 
+            online: true,
           });
 
           api.listenMqtt(async (err, event) => {
@@ -67,14 +69,14 @@ async function Listen(cb) {
           } else {
             console.log(err);
           }
-          console.log("Appstate Error >>>");
+          console.log("Appstate Error");
         }
       }
     );
   } catch (error) {
-    console.error("Error processing appstate file:");
-    console.error(error);
+    console.error("Error processing appstate file:", error);
   }
 }
 
+// Export the Listen function for use in other modules
 module.exports = { Listen };

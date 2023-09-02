@@ -3,15 +3,10 @@
 var utils = require("../utils");
 var log = require("npmlog");
 
-module.exports = function (defaultFuncs, api, ctx) {
-  return function setMessageReaction(
-    reaction,
-    messageID,
-    callback,
-    forceCustomReaction
-  ) {
-    var resolveFunc = function () {};
-    var rejectFunc = function () {};
+module.exports = function(defaultFuncs, api, ctx) {
+  return function setMessageReaction(reaction, messageID, callback, forceCustomReaction) {
+    var resolveFunc = function(){};
+    var rejectFunc = function(){};
     var returnPromise = new Promise(function (resolve, reject) {
       resolveFunc = resolve;
       rejectFunc = reject;
@@ -74,7 +69,7 @@ module.exports = function (defaultFuncs, api, ctx) {
         break;
       default:
         if (forceCustomReaction) {
-          break;
+          break; 
         }
         return callback({ error: "Reaction is not a valid emoji." });
     }
@@ -85,14 +80,14 @@ module.exports = function (defaultFuncs, api, ctx) {
         actor_id: ctx.userID,
         action: reaction == "" ? "REMOVE_REACTION" : "ADD_REACTION",
         message_id: messageID,
-        reaction: reaction,
-      },
+        reaction: reaction
+      }
     };
 
     var qs = {
       doc_id: "1491398900900362",
       variables: JSON.stringify(variables),
-      dpr: 1,
+      dpr: 1
     };
 
     defaultFuncs
@@ -103,7 +98,7 @@ module.exports = function (defaultFuncs, api, ctx) {
         qs
       )
       .then(utils.parseAndCheckLogin(ctx.jar, defaultFuncs))
-      .then(function (resData) {
+      .then(function(resData) {
         if (!resData) {
           throw { error: "setReaction returned empty object." };
         }
@@ -112,7 +107,7 @@ module.exports = function (defaultFuncs, api, ctx) {
         }
         callback(null);
       })
-      .catch(function (err) {
+      .catch(function(err) {
         log.error("setReaction", err);
         return callback(err);
       });
